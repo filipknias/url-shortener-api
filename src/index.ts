@@ -20,6 +20,7 @@ connection.once("open", () => {
   console.log("Connected successfully");
 });
 
+app.use(express.json());
 app.use('/api/url', urlController);
 
 app.listen(port, () => {
