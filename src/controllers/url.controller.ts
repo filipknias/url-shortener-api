@@ -1,5 +1,6 @@
 import { Router, Request } from "express";
 import Url from "../models/Url";
+import View from "../models/View";
 import { IUrl } from "../types/models";
 import shortid from "shortid";
 
@@ -22,7 +23,8 @@ router.get("/:id", async (req, res) => {
     if (url === null) {
       return res.json({ success: false, message: `Url with id: ${id} not found` }).status(404);
     }
-    res.json({ success: true, data: url }).status(200);
+    const viewsCount = await View.find({ url_id: id }).count();
+    res.json({ success: true, data: url, views: viewsCount }).status(200);
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: error }).status(500);
