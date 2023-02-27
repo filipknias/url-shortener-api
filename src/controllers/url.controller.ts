@@ -17,9 +17,10 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const url = await Url.findOne({ _id: req.params.id });
+    const id = req.params.id;
+    const url = await Url.findOne({ _id: id });
     if (url === null) {
-      return res.json({ success: false, message: `Url with id: ${req.params.id} not found` }).status(404);
+      return res.json({ success: false, message: `Url with id: ${id} not found` }).status(404);
     }
     res.json({ success: true, data: url }).status(200);
   } catch (error) {
@@ -37,7 +38,7 @@ router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
       return res.json({ success: true, data: longUrlPresent }).status(200);
     }
     // Create new url record
-    const newUrl = new Url({ long_url, expires_at, short_url: `/${shortid.generate()}` });
+    const newUrl = new Url({ long_url, expires_at, short_url: `${shortid.generate()}` });
     const data = await newUrl.save();
     res.json({ success: true, data }).status(200);
   } catch (error) {

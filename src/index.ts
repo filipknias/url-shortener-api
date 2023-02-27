@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 import urlController from './controllers/url.controller';
+import redirectController from './controllers/redirect.controller';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ connection.once("open", () => {
 
 app.use(express.json());
 app.use('/api/url', urlController);
+app.use('/', redirectController);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
