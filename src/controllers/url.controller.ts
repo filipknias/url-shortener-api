@@ -40,7 +40,17 @@ router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
       return res.json({ success: true, data: longUrlPresent }).status(200);
     }
     // Create new url record
-    const newUrl = new Url({ long_url, expires_at, short_url: `${shortid.generate()}` });
+    const urlDocument: any = {
+      long_url,
+      short_url: shortid.generate()
+    }
+    if (expires_at) {
+      const now = new Date();
+      const expirationTime = new Date(expires_at);
+      const timeDiff = expirationTime.getTime() - now.getTime();
+      urlDocument.expires_at = new Date(now.getTime() + timeDiff);
+    }
+    const newUrl = new Url(urlDocument);
     const data = await newUrl.save();
     res.json({ success: true, data }).status(200);
   } catch (error) {
