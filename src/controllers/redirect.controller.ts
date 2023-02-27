@@ -15,7 +15,7 @@ router.get("/:short_url", async (req, res) => {
     // Register IP address website view
     const ipAddress = IP.address();
     // IP address database lookup
-    const ipAddressPresent = await Url.find({ ip_address: ipAddress });
+    const ipAddressPresent = await View.findOne({ ip_address: ipAddress, url_id: url._id });
     if (!ipAddressPresent) {
       const view = new View({ ip_address: ipAddress, url_id: url._id });
       await view.save();
