@@ -31,6 +31,12 @@ router.get("/:id", async (req, res) => {
   }
 })
 
+interface IUrlDocument {
+  long_url: string;
+  short_url: string;
+  expires_at?: Date;
+}
+
 router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
   try {
     const { long_url, expires_at } = req.body;
@@ -40,7 +46,7 @@ router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
       return res.json({ success: true, data: longUrlPresent }).status(200);
     }
     // Create new url record
-    const urlDocument: any = {
+    const urlDocument: IUrlDocument = {
       long_url,
       short_url: shortid.generate()
     }
