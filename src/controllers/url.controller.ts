@@ -41,9 +41,11 @@ router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
   try {
     const { long_url, expires_at } = req.body;
     // Database long_url lookup
-    const longUrlPresent = await Url.findOne({ long_url });
-    if (longUrlPresent) {
-      return res.json({ success: true, data: longUrlPresent }).status(200);
+    if (!expires_at) {
+      const longUrlPresent = await Url.findOne({ long_url, expires_at: { $exists: false } });
+      if (longUrlPresent) {
+        return res.json({ success: true, data: longUrlPresent }).status(200);
+      }
     }
     // Create new url record
     const urlDocument: IUrlDocument = {
