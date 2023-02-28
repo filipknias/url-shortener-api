@@ -1,4 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
+import Url from './Url';
+
+
 
 const viewsSchema = new mongoose.Schema({
   ip_address: {
@@ -15,5 +18,7 @@ const viewsSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+
 
 export default mongoose.model('View', viewsSchema);

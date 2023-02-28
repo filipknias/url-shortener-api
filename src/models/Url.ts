@@ -1,4 +1,12 @@
 import mongoose from "mongoose";
+import { IUrl } from "../types/models";
+import View from './View';
+
+type SchemaExtends = IUrl & Document;
+
+interface IUrlSchema extends SchemaExtends {
+  _id: string;
+}
 
 const urlSchema = new mongoose.Schema({
   long_url: {
@@ -19,9 +27,24 @@ const urlSchema = new mongoose.Schema({
   expires_at: {
     type: Date,
     required: false,
+    validate: {
+      validator: (value: Date) => {
+        return value > new Date();
+      },
+      message: 'Field expires_at must be a date and in the future'
+    }
   },
 });
 
 urlSchema.index({ expires_at: 1 }, { expireAfterSeconds: 0 });
+
+urlSchema.pre<IUrlSchema>("remove", async function(next)  {
+  try {
+    await View.remove({ _id: { $in: this._id } });
+    next();
+  } catch (err: any) {
+    next(err);
+  }
+});
 
 export default mongoose.model('Url', urlSchema);
