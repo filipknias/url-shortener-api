@@ -2,8 +2,6 @@ import mongoose, { Schema } from "mongoose";
 import { IUrl } from "../types/models";
 import View from './View';
 
-type IUrlSchema = IUrl;
-
 const urlSchema = new mongoose.Schema({
   long_url: {
     type: String,
@@ -39,7 +37,7 @@ const urlSchema = new mongoose.Schema({
 
 urlSchema.index({ expires_at: 1 }, { expireAfterSeconds: 0 });
 
-urlSchema.pre<IUrlSchema>("remove", async function(next)  {
+urlSchema.pre<IUrl>("remove", async function(next)  {
   try {
     await View.remove({ _id: { $in: this._id } });
     next();
