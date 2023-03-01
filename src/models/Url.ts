@@ -2,11 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { IUrl } from "../types/models";
 import View from './View';
 
-type SchemaExtends = IUrl & Document;
-
-interface IUrlSchema extends SchemaExtends {
-  _id: string;
-}
+type IUrlSchema = IUrl & Document;
 
 const urlSchema = new mongoose.Schema({
   long_url: {
