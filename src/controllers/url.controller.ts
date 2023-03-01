@@ -1,9 +1,10 @@
-import { Router, Request } from "express";
+import { Router, Request, Response } from "express";
 import Url from "../models/Url";
 import View from "../models/View";
 import { IUrl } from "../types/models";
 import shortid from "shortid";
 import verifyToken from '../middlewares/verifyToken';
+import verifyAuthorization from '../middlewares/verifyAuthorization';
 
 const router: Router = Router();
 
@@ -36,16 +37,31 @@ interface IUrlDocument {
   long_url: string;
   short_url: string;
   expires_at?: Date;
+  user_id?: string;
 }
 
-router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
+router.post("/", verifyAuthorization, async (req: Request<{}, {}, IUrl>, res: Response) => {
   try {
     const { long_url, expires_at } = req.body;
     // Database long_url lookup
-    if (!expires_at) {
-      const longUrlPresent = await Url.findOne({ long_url, expires_at: { $exists: false } });
+    if (!expires_at && !req.user) {
+      const longUrlPresent = await Url.findOne({ 
+        long_url,
+        expires_at: { $exists: false }, 
+        user_id: { $exists: false }
+      });
       if (longUrlPresent) {
         return res.json({ success: true, data: longUrlPresent }).status(200);
+      }
+    }
+    if (req.user && !expires_at) {
+      const userUrlPresent = await Url.findOne({ 
+        long_url,
+        expires_at: { $exists: false }, 
+        user_id: req.user.id,
+      });
+      if (userUrlPresent) {
+        return res.json({ success: true, data: userUrlPresent }).status(200);
       }
     }
     // Create new url record
@@ -58,6 +74,9 @@ router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
       const expirationTime = new Date(expires_at);
       const timeDiff = expirationTime.getTime() - now.getTime();
       urlDocument.expires_at = new Date(now.getTime() + timeDiff);
+    }
+    if (req.user) {
+      urlDocument.user_id = req.user.id;
     }
     const newUrl = new Url(urlDocument);
     const data = await newUrl.save();

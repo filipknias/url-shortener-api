@@ -3,6 +3,7 @@ export interface IUrl {
   short_url: string;
   created_at: string;
   expires_at?: string;
+  user_id?: string;
 }
 
 export interface IUser {

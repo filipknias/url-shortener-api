@@ -2,13 +2,8 @@ import { Router, Request } from "express";
 import User from "../models/User";
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import { IUser } from '../types/models';
 
 const router: Router = Router();
-
-interface UserRequest extends Request {
-  user: IUser;
-}
 
 router.post("/register", async (req, res) => {
   try {

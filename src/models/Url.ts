@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { IUrl } from "../types/models";
 import View from './View';
 
@@ -33,6 +33,11 @@ const urlSchema = new mongoose.Schema({
       },
       message: 'Field expires_at must be a date and in the future'
     }
+  },
+  user_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: false,
   },
 });
 
