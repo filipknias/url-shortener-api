@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { IUrl } from "../types/models";
 import View from './View';
 
-type IUrlSchema = IUrl & Document;
+type IUrlSchema = IUrl;
 
 const urlSchema = new mongoose.Schema({
   long_url: {
