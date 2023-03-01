@@ -19,12 +19,15 @@ router.post("/register", async (req, res) => {
 
 router.post("/sign-in", passport.authenticate('local', { session: false }), async (req: any, res) => {
   try {
+    // Assign token
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       return res.json({ success: false, message: "JWT_SECRET not set" }).status(400);
     }
-    const token = jwt.sign({ id: req.user._id }, jwtSecret);
-    res.json({ success: true, data: { token } }).status(200);
+    const token = jwt.sign({ id: req.user.id }, jwtSecret);
+    // Find user in database
+    const user = await User.findById(req.user.id);
+    res.json({ success: true, data: { token, user } }).status(200);
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: error }).status(500);
