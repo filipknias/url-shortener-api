@@ -3,6 +3,7 @@ import Url from "../models/Url";
 import View from "../models/View";
 import { IUrl } from "../types/models";
 import shortid from "shortid";
+import verifyToken from '../middlewares/verifyToken';
 
 const router: Router = Router();
 
@@ -61,6 +62,27 @@ router.post("/", async (req: Request<{}, {}, IUrl>, res) => {
     const newUrl = new Url(urlDocument);
     const data = await newUrl.save();
     res.json({ success: true, data }).status(200);
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error }).status(500);
+  }
+})
+
+router.put("/:id", verifyToken, async (req, res) => {
+  try {
+    const { long_url, expires_at } = req.body;
+    const url = await Url.findByIdAndUpdate(req.params.id, { long_url, expires_at }, { new: true });
+    res.json({ success: true, data: url }).status(200);
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error }).status(500);
+  }
+})
+
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    await Url.findByIdAndDelete(req.params.id);
+    res.json({ success: true }).status(200);
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: error }).status(500);
