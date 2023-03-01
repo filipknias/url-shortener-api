@@ -4,3 +4,8 @@ export interface IUrl {
   created_at: string;
   expires_at?: string;
 }
+
+export interface IUser {
+  _id: string;
+  email: string;
+}
