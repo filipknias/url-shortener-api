@@ -3,8 +3,10 @@ import { Home } from './views';
 
 export const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
+    <div className="bg-gray-100 h-full">
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </div>
   )
 }
